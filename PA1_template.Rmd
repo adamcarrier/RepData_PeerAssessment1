@@ -29,7 +29,7 @@ totalSteps<-aggregate(steps~date,data=activity,sum,na.rm=TRUE) # sum all steps f
 
 1. Make a histogram of the total number of steps taken each day
 ```{r echo=TRUE}
-hist(totalSteps$steps, main="Total Number of Steps Taken Each Day", xlab="Total Steps", ylab="Frequency (Days)")
+hist(totalSteps$steps,main="Total Number of Steps Taken Each Day",xlab="Total Steps",ylab="Frequency (Days)")
 ```
 
 2. Calculate and report the mean and median total number of steps taken per day
@@ -47,11 +47,30 @@ median(totalSteps$steps)
 
 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
+```{r echo=TRUE}
+averageStepsPerInterval <- aggregate(steps~interval,data=activity,mean,na.rm=TRUE)
+plot(steps~interval,data=averageStepsPerInterval,type="l",main="Average Number of Steps Taken at Each Interval",xlab="Interval (5-minute increments)",ylab="Average Number of Steps")
+```
+
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r echo=TRUE}
+averageStepsPerInterval[which.max(averageStepsPerInterval$steps),]$interval
+```
+
+What is the maximum number of averaged steps for the interval above?
+```{r echo=TRUE}
+format(round(averageStepsPerInterval[which.max(averageStepsPerInterval$steps),]$steps),nsmall=0)
+```
+
+It is the **`r averageStepsPerInterval[which.max(averageStepsPerInterval$steps),]$interval`th** interval, which has `r format(round(averageStepsPerInterval[which.max(averageStepsPerInterval$steps),]$steps),nsmall=0)` averaged steps.
 
 ## Imputing missing values
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r echo=TRUE}
+sum(is.na(activity$steps))
+```
+A total of **`r sum(is.na(activity$steps))`** values are missing.
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 

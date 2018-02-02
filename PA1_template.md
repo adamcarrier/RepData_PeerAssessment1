@@ -32,7 +32,7 @@ totalSteps<-aggregate(steps~date,data=activity,sum,na.rm=TRUE) # sum all steps f
 1. Make a histogram of the total number of steps taken each day
 
 ```r
-hist(totalSteps$steps, main="Total Number of Steps Taken Each Day", xlab="Total Steps", ylab="Frequency (Days)")
+hist(totalSteps$steps,main="Total Number of Steps Taken Each Day",xlab="Total Steps",ylab="Frequency (Days)")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
@@ -64,11 +64,48 @@ median(totalSteps$steps)
 
 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
+
+```r
+averageStepsPerInterval <- aggregate(steps~interval,data=activity,mean,na.rm=TRUE)
+plot(steps~interval,data=averageStepsPerInterval,type="l",main="Average Number of Steps Taken at Each Interval",xlab="Interval (5-minute increments)",ylab="Average Number of Steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
+```r
+averageStepsPerInterval[which.max(averageStepsPerInterval$steps),]$interval
+```
+
+```
+## [1] 835
+```
+
+What is the maximum number of averaged steps for the interval above?
+
+```r
+format(round(averageStepsPerInterval[which.max(averageStepsPerInterval$steps),]$steps),nsmall=0)
+```
+
+```
+## [1] "206"
+```
+
+It is the **835th** interval, which has 206 averaged steps.
 
 ## Imputing missing values
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+
+```r
+sum(is.na(activity$steps))
+```
+
+```
+## [1] 2304
+```
+A total of **2304** values are missing.
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
