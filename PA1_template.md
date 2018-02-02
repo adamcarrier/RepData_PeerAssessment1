@@ -10,7 +10,8 @@ output:
 
 1. Load the data
 
-```{r echo=TRUE}
+
+```r
 workingDir <- "/Users/adam/Documents/Web Projects/Coursera/Reproducible Research/RepData_PeerAssessment1"
 archiveFileName <- "activity.zip"
 dataFileName <- "activity.csv"
@@ -21,27 +22,43 @@ activity <- read.csv(unz(archiveFileName, dataFileName), header = TRUE)
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
-```{r echo=TRUE}
+
+```r
 totalSteps<-aggregate(steps~date,data=activity,sum,na.rm=TRUE) # sum all steps for each date; return a data frame
 ```
 
 ## What is mean total number of steps taken per day?
 
 1. Make a histogram of the total number of steps taken each day
-```{r echo=TRUE}
+
+```r
 hist(totalSteps$steps, main="Total Number of Steps Taken Each Day", xlab="Total Steps", ylab="Frequency (Days)")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 2. Calculate and report the mean and median total number of steps taken per day
-```{r echo=TRUE}
+
+```r
 mean(totalSteps$steps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(totalSteps$steps)
 ```
 
+```
+## [1] 10765
+```
+
 * The **mean** total number of steps taken per day is 
-    `r format(round(mean(totalSteps$steps), 2), nsmall = 2)` steps.
+    10766.19 steps.
 * The **median** total number of steps taken per day is 
-    `r median(totalSteps$steps)` steps.
+    10765 steps.
 
 ## What is the average daily activity pattern?
 
