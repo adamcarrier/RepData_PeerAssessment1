@@ -17,7 +17,7 @@ archiveFileName <- "activity.zip"
 dataFileName <- "activity.csv"
 
 setwd(workingDir)
-activity <- read.csv(unz(archiveFileName, dataFileName), header = TRUE)
+activity <- read.csv(unz(archiveFileName, dataFileName),header=TRUE)
 ```
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis
@@ -117,7 +117,7 @@ A total of **2304** values are missing.
 dailyAverageSteps <- function(date){
   meanSteps <- mean(activity[activity$date==date,]$steps)
   if (is.nan(meanSteps) || is.na(meanSteps)) meanSteps <- 0
-  format(round(meanSteps),nsmall=0)
+  as.numeric(format(round(meanSteps),nsmall=0)) # coerce value to numeric, just in case
 }
 ```
   
@@ -139,10 +139,60 @@ for(i in 1:nrow(activityComplete)){
 
 A total of 2304 steps containing `NA` were replaced with new values.
 
-4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.
+
+
+```r
+totalStepsComplete<-aggregate(steps~date,data=activityComplete,sum)
+hist(totalStepsComplete$steps,main="Total Number of Steps Taken Each Day",xlab="Total Steps",ylab="Frequency (Days)")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```r
+mean(totalStepsComplete$steps)
+```
+
+```
+## [1] 9354.23
+```
+
+```r
+median(totalStepsComplete$steps)
+```
+
+```
+## [1] 10395
+```
+
+* The **mean** total number of steps taken per day is 
+9354.23 steps.
+* The **median** total number of steps taken per day is 
+10395 steps.
+
+5. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+> The **mean** value for the data set with the replaced `NA` steps is lower.
+> The **median** value for the data set with the replaced `NA` steps is lower.
+> This is expected for both values, since all dates that had no steps recorded at all were set to `0` steps.
+> Adding more zero values effectively lowers the average and moves the midpoint (median) lower.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 1. Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
+
+```r
+activityComplete$day=ifelse(as.POSIXlt(as.Date(activityComplete$date))$wday%%6==0,"weekend","weekday")
+activityComplete$day=factor(activityComplete$day,levels=c("weekday","weekend"))
+```
+
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
+```r
+averageStepsPerInterval2=aggregate(steps~interval+day,activityComplete,mean)
+library(lattice)
+xyplot(steps~interval|factor(day),data=averageStepsPerInterval2,aspect=1/2,type="l")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
