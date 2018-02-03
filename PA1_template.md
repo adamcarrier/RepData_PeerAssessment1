@@ -109,7 +109,35 @@ A total of **2304** values are missing.
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
+> I chose to determine the average number of steps for a given date.
+> For several dates, no number of steps were recorded. For those dates, the average is just zero (0).
+
+
+```r
+dailyAverageSteps <- function(date){
+  meanSteps <- mean(activity[activity$date==date,]$steps)
+  if (is.nan(meanSteps) || is.na(meanSteps)) meanSteps <- 0
+  format(round(meanSteps),nsmall=0)
+}
+```
+  
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+
+
+```r
+activityComplete <- activity # New dataset copied from the original
+
+numberEmptyRows <- 0 # Keep a counter of how many NA substitutions were done
+
+for(i in 1:nrow(activityComplete)){
+    if(is.na(activityComplete[i,]$steps)){
+        activityComplete[i,]$steps<-dailyAverageSteps(activityComplete[i,]$date)
+        numberEmptyRows <- numberEmptyRows+1
+    }
+}
+```
+
+A total of 2304 steps containing `NA` were replaced with new values.
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 

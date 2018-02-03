@@ -184,9 +184,32 @@ plot(steps~interval,data=averageStepsPerInterval,type=&quot;l&quot;,main=&quot;A
 <pre><code>## [1] 2304</code></pre>
 <p>A total of <strong>2304</strong> values are missing.</p>
 <ol start="2" style="list-style-type: decimal">
-<li><p>Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</p></li>
-<li><p>Create a new dataset that is equal to the original dataset but with the missing data filled in.</p></li>
-<li><p>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</p></li>
+<li>Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</li>
+</ol>
+<blockquote>
+<p>I chose to determine the average number of steps for a given date. For several dates, no number of steps were recorded. For those dates, the average is just zero (0).</p>
+</blockquote>
+<pre class="r"><code>dailyAverageSteps &lt;- function(date){
+  meanSteps &lt;- mean(activity[activity$date==date,]$steps)
+  if (is.nan(meanSteps) || is.na(meanSteps)) meanSteps &lt;- 0
+  format(round(meanSteps),nsmall=0)
+}</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Create a new dataset that is equal to the original dataset but with the missing data filled in.</li>
+</ol>
+<pre class="r"><code>activityComplete &lt;- activity # New dataset copied from the original
+
+numberEmptyRows &lt;- 0 # Keep a counter of how many NA substitutions were done
+
+for(i in 1:nrow(activityComplete)){
+    if(is.na(activityComplete[i,]$steps)){
+        activityComplete[i,]$steps&lt;-dailyAverageSteps(activityComplete[i,]$date)
+        numberEmptyRows &lt;- numberEmptyRows+1
+    }
+}</code></pre>
+<p>A total of 2304 steps containing <code>NA</code> were replaced with new values.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</li>
 </ol>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
